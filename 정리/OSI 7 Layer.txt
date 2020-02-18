@@ -1,0 +1,55 @@
+Layer 7 - Application(응용 계층)
+  사용자를 위한 각종 서비스를 제공
+  Program : Chrome, IE, FireFox, OutLook, 알FTP ...
+  Protocol : HTTP, HTTPs, SMTP, POP3, iMAP, FTP
+
+Layer 6 - Presentation(표현 계층)
+  데이터의 표현과 압축 및 압축해제, 암호화 및 복호화의 기능을 제공
+  데이터 : 텍스트(ASCII, Unicode...)
+         미디어(영상-MP4, AVI.. | 음향-MP3, FLAC...)
+         이미지(JPG, BMP, GIF...)
+
+Layer 5 - Session(세션 계층)
+  프로세스 간의 연결 및 유지 또는 제어의 기능을 제공
+  예) 로그인 / 로그아웃, 알림 메시지
+
+Layer 4 - Transport(전송 계층)
+  데이터를 목적지 프로세스 까지 전달 하기위한 기능을 제공
+  Protocol : TCP(연결지향형) / UDP(비연결지향형)
+             신뢰성 높다.      신뢰성 낮다.
+             전송속도 낮다.     전송속도 높다.
+  Port Address : HTTP(TCP:80), SMTP(TCP:25), FTP(TCP:20,21)...
+                 DNS(UDP/TCP:53), DHCP(UDP:67,68)...
+
+Layer 3 - Network(네트워크 계층)
+  데이터를 목적지 네트워크 까지 전달 하기위한 기능을 제공
+  Protocol : Route Protocol(IP), Routing Protocol(EIGRP, OSPF...)
+             ICMP(ping, tracert, traceroute, ...)
+  IP Address : 네트워크 식별 주소
+               Unicast Address
+                 A Class : 0.0.0.0 ~ 127.255.255.255
+                 B Class : 128.0.0.0 ~ 191.255.255.255
+                 C Class : 192.0.0.0 ~ 223.255.255.255
+               Multicast Address
+                 D Class : 224.0.0.0 ~ 239.255.255.255
+               Broadcast Address
+                 255.255.255.255 또는 각 네트워크 영역 주소의 가장 마지막 주소
+
+Layer 2 - Data-Link(데이터-링크 계층)
+  네트워크의 물리적 연결을 위한 기능을 제공
+  목적지 Device 까지 데이터를 전달하기 위한 기능 제공
+  네트워크 연결 종류 :
+    Point-to-Point : WAN 구성에 사용(PPP, HDLC)
+    BMA(Broadcast Multi-Access) : LAN 구성에 사용(Ethernet, FastEthernet)
+    NBMA(Non-Broadcast Multi-Access) : WAN 구성에 사용(Frame-Relay)
+  Address : Ethernet(MAC Address)
+            Frame-Relay(DLCI)
+
+Layer 1 - Physical(물리 계층)
+  물리적으로 Device를 연결 하기 위한 기능 제공
+  케이블, 커넥터, 전기신호(bit)
+
+
+
+
+
