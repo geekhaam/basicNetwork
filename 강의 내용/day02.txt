@@ -1,16 +1,18 @@
 ※ Data encapsulation & de-encapsulation
 
- 편지에 비유하면 이해하기 편하다.
-어느 위치로 가야하는지 정보를 전달하기 위해, 각 계층마다 헤더 정보를 붙여준다. (편지 주소)
-실제 전달하는 정보는 데이터 (편지 내용)
-2계층에서는 푸터 정보도 같이 전달한다.
+- 편지에 비유하면 이해하기 편하다.
+  어느 위치로 가야하는지 정보를 전달하기 위해, 각 계층마다 헤더 정보를 붙여준다. (편지 주소)
+  실제 전달하는 정보는 데이터 (편지 내용)
+  2계층에서는 푸터 정보도 같이 전달한다.
 
- 각 계층마다 데이터셋이 만들어질 때, 각 계층의 데이터셋을 부르는 특정 명칭이 있다.
+- 각 계층마다 데이터셋이 만들어질 때, 각 계층의 데이터셋을 부르는 특정 명칭이 있다.
 	4계층 : Layer 4 PDU (TCP Segment) * UDP : UDP Datagram 
 	3계층 : Layer 3 PDU (IP Datagram) -> Packet
 	2계층 : Layer 2 PDU (Ethernet Frame)
 	1계층 : Bit Signal (전기 신호)
 	* PDU : Prodtocol Data Unit
+
+
 
 ※ 1계층 : Physical Layer
 
@@ -29,14 +31,105 @@
 		파장의 종류에 따라서 Multi Mode(단파장) / Single Mode(장파장)로 구분된다.
 		전송 거리 : multi - 2km / single - 10km
 
-* 케이블의 코드에 따라서 분류되며, 어느 정도 정보를 확인할 수 있다.
+
+· 케이블의 코드에 따라서 케이블 종류가 분류되며, 어느 정도 정보를 확인할 수 있다.
 
 - 코드의 마지막이 숫자로 이루어져 있으면 전송 거리로 유추하면 된다.
   코드의 마지막이 영어로 이루어져 있으면 케이블의 종류를 지칭한다.
-- 맨 앞자리 숫자는 대역폭을 지칭한다.
+- 맨 앞자리 숫자는 대역폭을 지칭한다. 10Base-T : 10Mbps
 - Base : 디지털 신호를 보내는 밴드를 지칭
 - Duplex : Half - 반이중통신, 한쪽에서만 신호를 보낼 수 있다. (동시 불가)
 	   Full - 전이중통신, 양쪽에서 동시에 신호를 보낼 수 있다.
 - 마지막 자리 X의 유무 차이 : X는 cross의 의미를 가진다.
 			 내부 선이 꼬여 있는지, 꼬여 있지 않은지를 지칭한다.
-			 Pin의 송수신 구조에 따라서 Cross된 케이블을 사용할지 말지를 구분한다.
+			 Pin의 송수신 구조에 따라서 Cross된 케이블을 사용할지 말지를 구분한다
+- Straight와 Crossover에 대한 구분
+  보통 같은 장비끼리는 Crossover / 다른 장비끼리는 Straight를 사용
+  (단, 라우터와 서버의 핀 구조는 동일하기 때문에 Crossover를 사용한다.)
+
+* 국내에서 LAN 핀의 배열은 대개 T568B를 사용한다.
+* LAN 연결 구성 방식 : uplink(클라이언트에서 서버쪽으로 연결하는 방향) 할수록 대역폭을 늘려라
+		    -> 서버단으로 갈수록 사용자가 몰리기 때문에 병목현상이 일어나지 않게
+		       대역폭을 늘려줘야 한다.
+
+
+· 디지털 신호 전달 방식
+
+- WAN 방식에서는 Data Signal과 Clock Signal을 병렬적으로 처리
+- LAN 방식에서는 Data Siganl과 Clock Signal을 인코딩하여 합쳐서 한번에 처리
+  (인코딩 방식은 멘체스터 인코딩, [-] -> [+] : 1 / [+] -> [-] : 0)
+
+- 전송 거리 등의 문제에 따라서 방식을 다르게 함.
+  인코딩 처리를 하게 되면 그에 따른 자원 사용 등 성능 저하
+
+- Clock Signal : Data Signal 동기화를 위해 보내는 신호
+  clock rate : Clock Signal에 대한 단위 clock rate 64000bps
+			(1초에 64000bit의 Clock Signal을 보내준다.)
+
+* B/s -> Byte per second (일반적으로 컴퓨터에서의 속도를 환산할 때 사용)
+  bps -> bit per second (네트워크 쪽에서의 속도를 환산할 때 사용)
+  1Byte = 8bit
+
+
+
+※ 2계층 : Data-Link Layer
+
+· LLC와 MAC 계층으로 나뉘어진다.
+
+- LLC (Logicla Link Control) : 상위 계층과 연관된 계층
+			       네트워크 로컬 장비간 논리적 연결 지원
+			       IEEE 802.2 LLC Protocol
+
+- MAC (Media Access Control) : 하위 계층(Physical Layer)과 연관된 계층
+			       네트워크 매체(케이블)에 접근 통제
+			       매체 접근 제어 CSMA/CD
+
+- Ethernet Header에서 Destination / Source -> MAC 주소
+		   Protocol -> LLC
+
+* CSMA / CD
+  Carrier Sense Multiple Access / Collision Detection
+  반송파	  감지	다중	 접속	  충돌	    탐지
+  - Bus Topology(버스형 토폴로지)에서는 연결되어 있는 모든 PC가 신호를 받을 수 있기 때문에
+    -> 신호끼리 충돌이 발생할 수 있다.
+       충돌이 발생하면 가장 가까운 PC가 제밍 신호를 보낸다.
+       -> 모든 PC가 신호를 끊는다.
+       -> 랜덤 시간이 가장 빨리 끝난 PC가 반송파를 보낸다.
+       -> 반송파가 감지가 안 되면 또 다른 신호를 보낸다.
+
+  - 과거 Bus Topology와 Half Duplex에서 자주 발생했으다.
+  - 충돌이 발생할 수 있는 가능성을 가진 영역 : Collision Domain / Broadcast Domain
+    라우터를 기준으로 Broadcast Domain이 나뉘어지고,
+    스위치를 기준으로 Collision Domain이 나뉘어진다.
+
+
+· Frame Type
+
+Ethernet II (DIX II) Frmae
+
+ HEADER
+ - Preamble은 서두 (신호 송신을 알리며 대기 상태로 만들도록 해준다.)
+ 	     프레임 동기화하는 역할 (대역폭을 구분하여 속도 등 동기화를 해준다.)
+	     010101 신호만 보내다가 11로 프레임의 시작 지점을 알려준다.
+   정확하게 Preamble은 Frame에 속하지 않는다.
+
+ - Destination Address	: 목적지 주소
+			  목적지에 따라서 받을지 말지를 구분하기 때문에 가장 선두에 있다.
+ - Source Address	: 출발지 주소
+   -> 합쳐서 MAC Address(정식 명칭은 EUI이며, IPv4 / IPv6에 따라서 48bit / 64bit로 구분)
+
+ * 제조 회사, 제조 번호가 적혀 있기 때문에 현재 네트워크 구성에 어떠한 장비가 있는지 알 수 있다.
+   IEEE mac search에서 상위 24bit 주소(제조 회사)만 적어서 검색
+   ex) - 본인 IP LAN 카드의 제조 회사 검색
+       cmd에서 ipconfig /all -> 장치 주소 확인
+       - 접속되었던 IP LAN 카드의 제조회사 검색
+       -> 98-83-89-85-19-0B 에서 98-83-89 필터링
+       cmd에서 arp -a -> 해당되는 주소에서 위와 같이 필터링
+   이렇게 MAC 주소를 확인하여 보안상 허용되지 않은 MAC 주소의 디바이스를 검색할 수 있다.
+
+ - Type : 0x0800 - IP / 0x0806 - ARP 인지를 구분한다.
+ 
+ FOOTER
+ - FCS : Frame Check Sequence - 오류가 있는지 확인한다.
+
+
