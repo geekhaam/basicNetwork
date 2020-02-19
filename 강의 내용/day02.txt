@@ -105,7 +105,7 @@
 
 · Frame Type
 
-Ethernet II (DIX II) Frmae
+Ethernet II (DIX II) Frame
 
  HEADER
  - Preamble은 서두 (신호 송신을 알리며 대기 상태로 만들도록 해준다.)
