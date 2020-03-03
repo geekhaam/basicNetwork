@@ -1,0 +1,87 @@
+Cisco IOS
+  - Cisco 네트워크 장비를 제어하기 위한 운영체제
+  - 장비를 제어하기 위한 다양한 기능이 들어 있다.
+    (Routing, Switching, Protocols, Security, Network Service, .....)
+  - 장비 모델, 종류, IOS 버전에 따라 다양한 기능이 내장되어 있다.
+
+IOS Device 접근 방법
+  - Local 연결 : Console 케이블을 이용하여 직접 해당 장비에 접근하는 방법
+  - Remote 연결 : Network를 통해 해당 장비에 원격 접근하는 방법
+      - Telnet 접속
+      - SSH 접속
+      - FTP/TFTP
+      - HTTP/HTTPs
+
+IOS Mode
+  - 장비를 제어하기 위한 명령어를 사용하는 모드에 따라 다르게 구성하여
+    잘못된 명령어 입력으로 이한 구성 실패 및 인가받지 않은 사용자로 부터의
+    접근을 통제하여 운영의 안정성을 높여준다.
+      - User Mode : 일반 사용자 모드, 제한된 명령어만 실행 가능
+      - Privileged Mode : 관리자 모드, 대부분의 모든 명령어 실행 가능, Global Configuration Mode
+        에 접근할 수 있는 권한을 가진다.
+      - Global Configuration Mode : 전역 설정 모드, Device의 전체적인 구성을 할 수 있는 모드
+      - Other Sub Mode : 전역 설정 모드 안에서 특화된 기능을 구성하기 위한 모드
+
+                enable                configure terminal                    line console 0
+  User Mode -> Privileged Mode -> Global Configuration Mode -> Other Sub Mode
+                   <-                           <-                                            <-
+                disable                 exit, end, Ctrl+Z                             exit
+<---------------                           <-----------------------------------
+       logout                                                      end, Ctrl+Z
+
+
+Ctrl + Shift + 6 ------> 관리자 모드에서 명령어를 잘못 입력하여 도메인 검색을 하는 경우 취소한다.
+
+
+메모장                                        터미널
+   복사 : Ctrl + C                            Ctrl + Insert
+   붙여넣기 : Ctrl + V                     Shift + Insert
+   맨 앞으로 커서 이동 : Home       Ctrl + A
+   맨 뒤로 커서 이동 : End              Ctrl + E
+
+
+동작 구성을 확인할 때 사용
+    show running-config
+
+시작 구성을 확인할 때 사용
+    show startup-config
+
+변경된 동작 구성을 시작 구성으로 저장할 때 사용
+    copy running-config startup-config
+
+사용된 명령어 목록을 확인할 때 사용(관리자 모드)
+    show history
+
+사용된 명령어 목록을 확인할 때 사용(전역설정 모드)
+    do show history
+
+명령어 목록 저장 갯수 설정(관리자 모드)
+    terminal history size <0-256>
+
+
+전역 설정모드에서 작업
+    장비의 이름을 변경
+        hostname <devicename>
+
+    배너 설정 : 장비에 처음 접속할 때 표시할 메시지
+        banner motd <end>
+            배너 메시지 설정 ..... <end>
+
+    관리자 모드 접근 패스워드 설정
+        enable secret <password>
+
+    장비 접속 패스워드 설정(Console로 접속 할 때)
+        line console 0
+          password <password>
+          login
+
+    도메인 검색 기능 비활성화(테스트 및 명령어 학습을 할 때에만 설정)
+        no ip domain-lookup
+
+    장비 접속 유지시간(Console로 접속 할 때 세션유지 시간, 분/초를 0으로 설정하는 경우 무제한)
+        line console 0
+          exec-timeout <min> <sec>
+
+    로그 메시지 동기화 설정(Console 접속 할 때)
+        line console 0
+          logging synchronous

@@ -1,0 +1,113 @@
+과제2. Router_Basic_Configuration
+
+· Serial Interface Cable
+
+- DCE : Clock rate를 발생시키는 장치
+- DTE : DCE에서 발생된 Clock rate를 동기화하는 장치 (Clock rate를 발생시키지는 않는다.)
+
+* R11 - DCE / R12 - DTE -> 한 쪽이 DCE가 되면 반대편은 항상 DTE가 된다.
+
+
+· 케이블 연결
+
+- 케이블 연결시 구성을 확인 후 연결해야 한다.
+  물리적 구성과 논리적 구성(IP)을 일치시켜야 한다. -> 같은 Network ID를 가진 인터페이스끼리 연결
+  IP - Network ID / Host ID
+
+- 라우터를 기준으로 각각의 다른 네트워크로 분리된다. (스위치는 네트워크 분리가 아닌 확장을 위한 디바이스)
+
+
+· 라우터 기본 설정
+
+- 프롬프트 창에 떠있는 상태를 확인하여 본인이 현재 어떤 모드에 있는지 체크하고 명령어를 입력하자.
+
+- Previleged Mode로 진입
+  1) CLI 모드에서 >로 되어 있으면 User Mode
+  2) enable 명령어 입력 -> Previlliged Mode로 진입
+  3) 다음 configure terminal 명령어 입력 -> Global Configuration Mode로 진입
+
+- 비밀번호 설정 (R11 라우터 / 비밀번호 cisco)
+  1) hostname R11
+  2) enable secret cisco (관리자 모드로 진입할 때 입력하는 암호)
+
+- 콘솔 관련 설정 (0번 콘솔 / 비밀번호 console1)
+  1) line console 0 -> (config-line : 콘솔과 관련된 설정을 할 수 있는 모드)
+  2) password console1 (콘솔로 접속할 시 입력하게 되는 암호)
+  3) login
+  4) exec-timeout 3 0 (console 세션 타임아웃 3분)
+  4) logging synchronous (console 메세지 동기화)
+
+* 명령어 앞에 no를 추가하면 설정된 값들을 없애준다.
+
+
+- 사용한 명령어들 메모장에 정리
+
+!-R11
+
+!User Mode
+enable
+
+!Previleged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R11
+enable secret cisco
+line console 0
+  password console1
+  login
+  exec-timeout 3 0
+  logging synchronous
+  exit
+
+!-R12
+
+!User Mode
+enable
+
+!Previleged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R12
+enable secret router
+line console 0
+  password con2
+  login
+  exec-timeout 5 30
+  logging synchronous
+  exit
+
+!-R13
+
+!User Mode
+enable
+
+!Previleged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R13
+enable secret password
+line console 0
+  password korea
+  login
+  exec-timeout 0 0			-> 세션 타임아웃 시간 : 무한대
+  logging synchronous
+  exit
+
+
+· 라우터 접속 방식
+
+- local  : 직접 콘솔을 연결하여 접속 (console 비밀번호)
+- remote : Telnet으로 접속 (telnet 비밀번호)
+
+- telnet 연결시 암호 설정
+  : telnet으로 접속할 때 콘솔과 동일하게 line 명령어를 입력하지만 vty 명령어를 통해 접속
+    line vty 0 4 (0 ~ 4번 포트로 접속하는 사용자들에게 암호를 묻겠다.)
+
+
+· 시작 구성에 저장
+	이렇게 설정한 것들이 RAM에 저장된다.(running-config) -> 재부팅하면 사라진다.
+	따라서 시작 구성에 저장될 수 있도록 NVRAM에 저장하도록 한다.(startup-config)
+	- 명령어 : copy running-config startup-config
