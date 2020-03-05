@@ -1,0 +1,32 @@
+
+CDP(Cisco Discovery Protocol)
+  - L2 Protocol 중 하나로 L2 Link 상에 존재하는 Cisco 장비를 찾기위해 개발된 프로토콜
+  - 이 프로토콜을 통해 L2 Link 상의 장비 종류 및 모델, 사용 Port, 장비 이름, IP 주소 등의 정보를
+    획득할 수 있다.
+  - 오로지 Cisco 장비에 대해서만 찾을 수 있으며, 인접 장비에 대한 정보만 획득할 수 있다.
+
+CDP 활성화
+  - 전역 설정에서 활성화
+    cdp run
+
+  - 특정 인터페이스에 대해서만 활성화(전제 조건으로 전역 설정에서 활성화가 되어야 함)
+    interface <interface-type> <slot>/<port>
+      cdp enable
+      no cdp enable
+
+
+CDP 정보 확인
+  - 관리자 모드에서 확인
+    show cdp neighbor
+
+  - 특정 장치에 대한 상세 CDP 정보 확인
+    show cdp entry <hostname>
+    - hostname : 이웃 장치의 장비이름, 장비이름 대신 *을 사용하면 모든 정보를 출력
+
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+
+SSH 연결 구성하기.
+  - TENET의 경우 메시지 전송이 평문으로 이루어지는 반면, SSH의 경우 암호화 되어
+    전송이 되기 때문에 보안 향상에 이점이 있다.
+  - SSH 연결 구성으로 변경을 한 후에는 반드시 SSH 연결을 위한 계정을 생성하야 한다.
+
+  1. 호스트 이름 설정
+     hostname <hostname>
+
+  2. 도메인 이름 설정
+    ip domain-name <domain-name>
+
+  3. 암호화 키 생성(키 길이 지정 필요)
+    crypto key generate rsa
+
+  4. SSH 연결 활성화
+    line vty 0 4
+      transport input ssh
+
+
+  - 현재 장비에 접속하고 있는 사용자 확인
+    show users
+
+
+
