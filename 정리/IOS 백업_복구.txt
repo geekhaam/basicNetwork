@@ -33,7 +33,73 @@ Cisco 구성 파일 및 IOS 백업/복구
         장소 IP 주소를 명시해야 한다.
 
 
-
-
-
 Cisco IOS 패스워드 복구(Recovery)
+  1. 콘솔 케이블로 장비 연결 및 접속
+  2. 장비의 전원을 Off -> On (재부팅)
+  3. 접속한 터미널 환경에서 IOS 로딩이 완료되기 전에 Ctrl + Break 단축키
+     입력하여 강제 중지 신호 전달 (ROMMON 모드 진입)
+  4. confreg 0x2142 명령어 입력 (부팅 모드 변경, 패스워드 복구 모드)
+  5. boot 명령어 입력하여 다시 부팅
+  6. 패스워드 입력 없이 관리자 모드까지 접근 가능
+  7. 시작 구성 파일을 동작 구성으로 복사(copy startup-config running-config)
+  8. 인터페이스 활성화
+  9. 패스워드 변경
+  10. config-register 0x2102 명령어를 전역 설정에서 입력(부팅 모드 변경, 정상 모드)
+  11. 동작 구성 파일을 시작 구성으로 복사(copy running-config startup-config)
+
+
+
+
+Router>enable
+Router#copy startup-config running-config
+Destination filename [running-config]? 
+
+664 bytes copied in 0.416 secs (1596 bytes/sec)
+R0#
+%SYS-5-CONFIG_I: Configured from console by console
+R0#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.	
+R0(config)#interface fastethernet 0/0
+R0(config-if)#no shutdown
+R0(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+R0(config-if)#exit
+R0(config)#
+R0(config)#interface fastethernet 0/1
+R0(config-if)#no shutdown
+R0(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+R0(config-if)#exit
+R0(config)#
+R0(config)#line console 0
+R0(config-line)#password cisco
+R0(config-line)#exit
+R0(config)#enable secret admin1234
+R0(config)#username telnet secret admin1234
+R0(config)#
+R0(config)#config-register 0x2102
+R0(config)#
+R0(config)#exit
+R0#
+%SYS-5-CONFIG_I: Configured from console by console
+
+R0#copy running-config startup-config
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+R0#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
