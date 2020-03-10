@@ -1,0 +1,113 @@
+- Subnetting
+
+192.168.2.0 /24
+60 Host
+
+192.168.2.0	(예약)
+192.168.2.64	(HQ-LAN)
+192.168.2.128	(HQ-Campus)
+192.168.2.192	(Campus-LAN)
+255.255.255.192
+
+!-Campus
+enable
+configure terminal
+hostname Campus
+no ip domain-lookup
+enable secret cisco
+line console 0
+  logging synchronous
+  exec-timeout 0 0
+  exit
+
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 192.168.2.193 255.255.255.192
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.2.129 255.255.255.192
+  encapsulation hdlc
+  bandwidth 64
+  clock rate 64000
+  no shutdown
+  exit
+
+!-HQ
+enable
+configure terminal
+hostname HQ
+no ip domain-lookup
+enable secret cisco
+line console 0
+  logging synchronous
+  exec-timeout 0 0
+  exit
+
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 192.168.2.65 255.255.255.192
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.2.130 255.255.255.192
+  encapsulation hdlc
+  bandwidth 64
+  clock rate 64000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 209.165.201.2 255.255.255.252
+  encapsulation hdlc
+  bandwidth 64
+  clock rate 64000
+  no shutdown
+  exit
+
+!-ISP
+enable
+configure terminal
+hostname ISP
+no ip domain-lookup
+enable secret cisco
+line console 0
+  logging synchronous
+  exec-timeout 0 0
+  exit
+
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 209.165.200.225 255.255.255.224
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 209.165.201.1 255.255.255.252
+  encapsulation hdlc
+  bandwidth 64
+  clock rate 64000
+  no shutdown
+  exit
+
+- Routing
+
+!-Campus (Default)
+ip route 0.0.0.0 0.0.0.0 192.168.2.130
+
+!-ISP (Default)
+ip route 0.0.0.0 0.0.0.0 209.165.201.2
+
+!-HQ (Static)
+ip route 192.168.2.192 255.255.255.192 192.168.2.129
+ip route 209.165.200.224 255.255.255.224 209.165.201.1
