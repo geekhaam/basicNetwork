@@ -20,8 +20,8 @@
     - Version 1은 경로 정보를 전파할 때 255.255.255.255를 목적지로 전파한다. (Broadcast)
     - Version 2는 경로 정보를 전파할 때 224.0.0.9를 목적지로 전파한다. (Multicast)
     - 자동 축약 기능이 있다. (네트워크 주소 정보를 Classful 네트워크 주소로 자동 축소시키는 기능)
-      자동 축약 기능을 활용하면 네트워크 자원을 아낄 수 있다. (네트워크가 잘 정리되어 있을 때 사용하면 좋다.)
-      no auto-summary 명령어를 이용하여 비활성.
+      자동 축약 기능을 활용하면 네트워크 자원을 아낄 수 있다. (네트워크 영역이 흩어지지 않았을 때 사용하면 좋다.)
+      no auto-summary 명령어를 이용하여 비활성. 		=> RIP_Practice_no_auto-summary.pkt 참고
     - Equal Cost Path 지원 (Load-Balance : 부하 분산)
       최적 경로 계산 값이 동일하면 모두 사용할 수 있도록 하는 기능
 
@@ -33,5 +33,40 @@
 	Router(config-router)# network <경로 정보를 전파할 Connected 인터페이스의 Classful 네트워크 주소>
 
     - RIP 구성 확인(관리자 모드)
+	
 	Router# show ip protocols
+	
+	Routing Protocol is "rip"
+	Sending updates every 30 seconds, next due in 17 seconds (30초 주기로 업데이트)
+	Invalid after 180 seconds, hold down 180, flushed after 240
+	(업데이트가 180초 동안 없으면 사용X, 문제가 있어도 180초 동안 보관, 240초 이후 소멸)
+	Outgoing update filter list for all interfaces is not set
+	Incoming update filter list for all interfaces is not set
+	Redistributing: rip
+	Default version control: send version 2, receive 2
+	  Interface             Send  Recv  Triggered RIP  Key-chain
+	  FastEthernet0/0       2     2     
+	  Serial0/0             2     2     
+	  Serial0/1             2     2     
+	Automatic network summarization is in effect (auto summary)
+	Maximum path: 4 (equal path cost : load-balance)
+	Routing for Networks: (connected)
+		192.168.2.0
+		192.168.3.0
+		192.168.4.0
+	Passive Interface(s):
+	Routing Information Sources:
+		Gateway         Distance      Last Update
+		192.168.2.1          120      00:00:00
+		192.168.4.1          120      00:00:16
+	Distance: (default is 120) (기본 ad값 120)
+
+	-------------------------------------------------------------------------
+
 	Router# show ip route [rip]	-> rip로 학습된 정보만을 보여준다.
+
+	R    192.168.5.0/24 	[120/2]   via 	192.168.2.2, 00:00:00, 	Serial0/0
+		     	  ad/Metric(Hopcount)	next-hop address	local interface
+
+	R       172.16.0.0/16	[120/1] via 192.168.2.2, 00:00:19, Serial0/1
+                      		[120/1] via 192.168.1.2, 00:00:28, Serial0/0 -> Load-Balance

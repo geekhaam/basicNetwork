@@ -1,0 +1,36 @@
+Dynamic Routing Protocol
+  - 동일한 Routing Protocol을 사용하는 장비간에 알고 있는 네트워크 경로 정보를 공유하여 최적의 경로를
+    찾을 수 있도록 한다.
+  - 대표적인 Routing Protocol로 RIP, EIGRP, OSPF 가 있다.
+  - 한 장비에 동작할 수 있는 Routing Protocol은 여러개 동작 시킬 수 있다.
+    단, 동일 목적지에 대한 최적 경로는 Route 우선순위에 의해 하나의 Routing Protocol로 학습한 정보만을
+    사용 한다.
+  - Routing Protocol에 의해서 공유하는 네트워크 경로 정보에는 다음의 정보를 포함하여 공유를 한다.
+    (목적지 네트워크 주소, 목적지 서브넷 마스크 주소, 최적 경로 계산 값 등)
+  
+
+RIP
+  - 표준 Routing Protocol
+  - 최적 경로 계산에 사용하는 매개변수는 Hop Count(Router Count) 이다.
+  - 매 30초 주기로 경로 정보를 전파(광고).
+  - Version 1, Version 2 가 존재하며 Version 1의 경우 Classful Routing Protocol로 동작하고
+    Version 2의 경우 Classless Routing Protocol로 동작한다.
+  - Version 1은 경로 정보를 전파할 때 255.255.255.255를 목적지로 전파한다.(Broadcast)
+  - Version 2는 경로 정보를 전파할 때 224.0.0.9를 목적지로 전파한다.(Multicast)
+  - 자동 축약 기능이 있다.(네트워크 주소 정보를 Classful 네트워크 주소로 자동 축소 시키는 기능)
+    no auto-summary 명령어를 이용하여 비활성.
+  - Equal Cost Path 지원(Load Balance-부하분산)
+
+RIP 구성 명령(전역 설정)
+  Router(config)# router rip
+  Router(config-router)# no auto-summery
+  Router(config-router)# version 2
+  Router(config-router)# network <광고 할 Connected 인터페이스의 Classful 네트워크 주소>
+  Router(config-router)# network <경로 정보를 전파할 Connected 인터페이스의 Classful 네트워크 주소>
+
+RIP 구성 확인(관리자 모드)
+  Router# show ip protocols
+  Router# show ip route [rip]
+
+
+
