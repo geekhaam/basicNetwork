@@ -1,0 +1,164 @@
+!-R0
+enable
+configure terminal
+
+hostname R0
+
+interface serial 0/0
+  ip address 172.16.10.5 255.255.255.252
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 172.16.10.1 255.255.255.252
+  no shutdown
+  exit
+interface fastethernet 0/0
+  ip address 192.168.64.254 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 192.168.65.254 255.255.255.0
+  no shutdown
+  exit
+
+router eigrp 1
+  no auto-summary
+  network 172.16.0.0
+  network 192.168.64.0
+  network 192.168.65.0
+
+
+
+
+
+
+!-R1
+enable
+configure terminal
+
+hostname R1
+
+interface serial 0/0
+  ip address 172.16.10.6 255.255.255.252
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 172.16.10.9 255.255.255.252
+  no shutdown
+  exit
+interface fastethernet 0/0
+  ip address 192.168.128.254 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 192.168.129.254 255.255.255.0
+  no shutdown
+  exit
+interface ethernet 1/0
+  ip address 192.168.130.254 255.255.255.0
+  no shutdown
+  exit
+interface ethernet 1/1
+  ip address 192.168.131.254 255.255.255.0
+  no shutdown
+  exit
+interface ethernet 1/2
+  ip address 192.168.132.254 255.255.255.0
+  no shutdown
+  exit
+
+router eigrp 1
+  no auto-summary
+  network 172.16.0.0
+  network 192.168.128.0
+  network 192.168.129.0
+  network 192.168.130.0
+  network 192.168.131.0
+  network 192.168.132.0
+
+
+
+
+
+
+
+!-R2
+enable
+configure terminal
+
+hostname R2
+
+interface serial 0/0
+  ip address 172.16.10.10 255.255.255.252
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 172.16.10.2 255.255.255.252
+  no shutdown
+  exit
+interface fastethernet 0/0
+  ip address 192.168.32.254 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 192.168.33.254 255.255.255.0
+  no shutdown
+  exit
+interface ethernet 1/0
+  ip address 192.168.34.254 255.255.255.0
+  no shutdown
+  exit
+
+router eigrp 1
+  no auto-summary
+  network 172.16.0.0
+  network 192.168.32.0
+  network 192.168.33.0
+  network 192.168.34.0
+
+
+- 축약 정보
+
+!-R0
+192.168.64.0 /24 01000000
+192.168.65.0 /24 01000001
+		 11111110 -> 255.255.254.0
+
+interface serial 0/0
+  ip summary-address eigrp 1 192.168.64.0 255.255.254.0
+interface serial 0/1
+  ip summary-address eigrp 1 192.168.64.0 255.255.254.0
+
+!-R1
+192.168.128.0 /24 10000000
+192.168.129.0 /24 10000001
+192.168.130.0 /24 10000010
+192.168.131.0 /24 10000011
+		  11111100 -> 255.255.252.0
+
+192.168.132.0 /24 10000100 -> 불필요한 비트가 영역이 생기기 때문에 축약에서 제외 (101, 110, 111)
+
+interface serial 0/0
+  ip summary-address eigrp 1 192.168.128.0 255.255.252.0
+interface serial 0/1
+  ip summary-address eigrp 1 192.168.128.0 255.255.252.0
+
+(한 쪽으로만 축약된 정보를 보내준다면 오히려 정보가 많아지므로 양쪽으로 모두 축약 정보를 보내주어야 한다.)
+
+!-R2
+192.168.32.0 /24 00100000
+192.168.33.0 /24 00100001
+		 11111110 -> 255.255.254.0
+192.168.34.0 /24 00100010 -> 제외
+
+interface serial 0/0
+  ip summary-address eigrp 1 192.168.32.0 255.255.254.0
+interface serial 0/1
+  ip summary-address eigrp 1 192.168.32.0 255.255.254.0
+
+R3 추가
+
+interface ethernet 1/1
+  ip summary-address eigrp 1 192.168.0.0 255.255.0.0
+  ip summaru-address eigrp 1 172.168.10.0 255.255.255.240
+
