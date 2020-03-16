@@ -91,31 +91,70 @@ EIGRP 구성 확인(관리자 모드)
   Router# show ip eigrp topology
 
 
+
 EIGRP 수동 축약
-  - RIP도 수동 축약을 할 수 있으나 Classful 범위를 벗어나는 축약을 할 수 없다.
+  - RIP 도 수동 축약을 할 수 있으나 Classful 범위를 벗어나는 축약은 할 수 없다.
     예) 192.168.0.0 /24, 172.16.0.0 /16, 10.0.0.0 /8 까지의 축약은 지원
-        192.168.0.0 /16(불가), 172.16.0.0 /14(불가), 10.0.0.0 /7(불가)
-  - EIGRP는 Classful 범위를 벗어난 축약을 할 수 있다.(Classless 지원)
+        192.168.0.0 /16(안됨), 172.16.0.0 /14(안됨) 10.0.0.0 /7(안됨)
+  - EIGRP 는 Classful 범위를 벗어난 축약을 할 수 있다.(Classless 지원)
   - 축약은 Interface 별로 이루어 지며, 해당 인터페이스에 설정한 축약 정보로 기존 광고 정보가 변경된다.
-    (축약이 설정된 인터페이스에서만 축약이 이루어지므로, 각 인터페이스별 설정이 필요)
   - 축약 정보에 속하는 광고 정보가 실제로 존재해야 축약 네트워크 정보를 전파할 수 있다.
-    (축약 정보에 존재하지 않는 네트워크를 설정해도 실제 존재하는 네트워크 정보들만 광고된다. -> 축약 정보는 광고 X)
 
-  - 축약 명령(전역 설정)
-    Router(config)# interface <interface-type> <slot>/<port>
-    Router(config-if)# ip summary-address {rip | eigrp <as-number>} <summary-network> <summary-subnetmask>
 
-    연속된 네트워크에서 축약 기능을 사용한다.
-    192.168.16.0 /24  ->  192.168.0001000.0
-    192.168.17.0 /24  ->  192.168.0001001.0
-    192.168.18.0 /24  ->  192.168.0001010.0
-    192.168.19.0 /24  ->  192.168.0001011.0
-			  255.255.1111100.0 -> 255.255.252.0
+축약 명령(전역 설정)
+  Router(config)# interface <interface-type> <slot>/<port>
+  Router(config-if)# ip summary-address {rip | eigrp <as-number>} <summary-network> <summary-subnetmask>
 
 
 
 
 
+OSPF
+  - 표준 Routing Protocol
+  - 최적 경로 계산에 사용하는 매개변수는 Bandwidth를 사용한다. 그리고 해당 매개 변수를 사용하여 계산된 결과를 Cost 값이라 한다.
+  - 매 10초 주기로 Hello Packet을 전달하며, 동일한 OSPF를 사용하는 장치를 찾고 관계 맺기 및 유지를 하기 위한 목적으로 사용.
+    (관계가 맺어진 경우를 Neighbor 또는 Adjacency 가 맺어졌다고 한다.)
+  - 10초 간격으로 Hello Packet을 받지 못한 경우 40초의 Dead Time 동안만 관계를 유지후 이웃 관계에서 삭제된다.
+  - OSPF도 이웃 관계를 맺은 장치간에만 경로 정보를 교환한다.
+  - 이웃으로부터 학습한 경로 정보들은 OSPF Database에 기록되며, 이 저장소에는 OSPF가 관리하는 모든 네트워크 경로 정보가 저장되어
+    있다.(모든 OSPF Router 들은 동일한 Database 정보를 가진다 -> 데이터베이스가 동기화 되어 있다.)
+  - 수렴 시간이 빠르며, 자동 축약 기능을 지원하지 않는다.
+  - 수동 축약을 지원하지만 OSPF 영역 구성이 되어 있어야 한다.
+  - 부분 업데이트 및 Equal Cost Path를 지원한다.
+  - Multicast Address로 224.0.0.5, 224.0.0.6 을 사용 한다.
+  - OSPF Database를 LS(Link-State) Database 라고 칭한다.
+
+
+
+OSPF 영역 구성
+  - OSPF 영역 구성은 계층적인 네트워크 정보가 생성될 수 있도록 해야 한다.
+  - OSPF 영역은 크게 전송 영역(백본 영역), 일반 영역
+  - 모든 일반 영역은 반드시 전송 영역과 연결되어 있어야 한다.
+
+OSPF 영역 구성에 따른 Router 이름
+  - Backbone Router : Backbone Area에만 존재하는 Router
+  - Router : 일반 Area 에만 존재하는 Router
+  - ABR : Area Border Router로 영역 경계에 위치하는 Router(영역 경계는 반드시 Area 0을 포함하여야 한다.)
+  - ASBR : AS Boundary Router로 AS 영역 경계에 위치하는 Router(AS는 autonomous System이다.)
+
+
+OSPF 구성 명령(전역 설정)
+  Router(config)# router ospf <process-number>
+  Router(config-router)# network <광고 할 Connected 인터페이스의 classless 네트워크 주소> <wildcard-mask> area <id>
+  Router(config-router)# network <경로 정보를 전파할 Connected 인터페이스의 Classless 주소> <wildcard-mask> area <id>
+
+  process-number : 하나의 Router 장치에서 여러 OSPF를 구동 시키기 위해 사용하는 Process ID
+
+  area <id> : 해당 네트워크가 소속될 Area ID 정보로, ID가 0인 경우 Backbone 영역에 소속이 되는 네트워크가 된다.
+              이웃관계를 맺는 Router의 영역 ID와 동일한 ID를 사용해야 한다.
+
+OSPF 확인 명령(관리자 모드)
+  Router# show ip protocols
+  Router# show ip ospf neighbor
+  Router# show ip ospf database
+  Router# show ip ospf interface <interface-type> <slot>/<port>
+  Router# show ip route ospf
+  
 
 
 
