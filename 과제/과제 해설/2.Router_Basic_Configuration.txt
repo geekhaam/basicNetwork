@@ -1,0 +1,94 @@
+!-R11
+!User Mode
+enable
+
+!Privileged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R11
+enable secret cisco
+line console 0
+  password console1
+  login
+  exec-timeout 3 0
+  logging synchronous
+  exit
+
+
+
+!-R12
+!User Mode
+enable
+
+!Privileged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R12
+enable secret router
+line console 0
+  password con2
+  login
+  exec-timeout 5 30
+  logging synchronous
+  exit
+
+
+
+!-R13
+!User Mode
+enable
+
+!Privileged Mode
+configure terminal
+
+!Global Configuration Mode
+hostname R13
+enable secret password
+line console 0
+  password korea
+  login
+  exec-timeout 0 0
+  logging synchronous
+  exit
+
+
+
+!Telnet Config
+!-R11
+enable
+configure terminal
+!
+line vty 0 4
+  password telnetpass
+  login
+  end
+!
+copy running-config startup-config
+
+
+!-R12
+enable
+configure terminal
+!
+line vty 0 4
+  password cisco
+  login
+  end
+!
+copy running-config startup-config
+
+
+!-R13
+enable
+configure terminal
+!
+username hacker secret telnet3
+line vty 0 4
+  login local
+  end
+!
+copy running-config startup-config
+
+

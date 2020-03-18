@@ -1,0 +1,150 @@
+ACL(Access Control List)
+  - Router 에서는 ACL을 사용하여 트래픽 식별, 필터링, 암호화, 분류, 변환 작업등 다양한 기능을 위해 사용된다.
+  - 대표적으로 ACL을 통해 Router를 경유하는 Packet을 식별하여 필터링 하는 곳에 사용한다.
+
+
+ACL 종류
+  - Standard ACL : IP Header의 Soruce Address 주소만을 식별하는 ACL
+  - Extended ACL : IP Header의 Source Address 및 Destination Address를 모두 식별하는 ACL
+                   추가로 Protocol Type도 식별을 하며, Protocol Type이 TCP/UDP인 경우 Port 번호 까지 식별하여
+                   다양한 Packet에 대해 필터링을 할 수 있다.
+
+ACL 번호
+  - Cisco에서는 ACL의 종류를 구분 할 때 번호로써 구분을 하게 된다.
+  - Standard ACL(1 ~ 99, 1300 ~ 1999)
+  - Extended ACL(100 ~ 199, 2000 ~ 2699)
+  - 새로운 기능으로 번호가 아닌 이름으로 ACL을 생성하는 방법도 존재.(Named ACL)
+  - 하나의 ACL 번호에는 여러 조건의 ACL 정보들이 들어 있다.
+  - 하나의 ACL 번호 안에서도 여러 ACL의 순서를 구분 하기위한 순서번호가 있다.
+    (순서 번호 -> ACL 검사 순서)
+  - ACL은 Router의 Interface에 적용을 하며, Inbound/Outbound 트래픽에 대해 식별하도록 적용할 수 있다.
+    (Inbound 트래픽만을 식별하게도 할 수 있으며, Inbound/Outbound 두가지 모두 식별하게도 할 수 있다.)
+  - ACL을 Interface에 적용 할 때 복수개의 ACL 번호를 적용 시킬 수 없다.(Inbound/Outbound 개별에 대한 복수 번호)
+
+inbound : interface -> ACL -> Routing ->
+outbound : interface -> Routing -> ACL -> interface
+
+
+ACL 예제
+   ACL 1
+     10 허가 192.168.1.0/24
+     20 거부 192.168.2.0/24
+     30 허가 192.168.3.0/24
+
+
+   ACL 2
+     10 거부 192.168.4.0/24
+     20 허가 192.168.5.0/24
+     30 허가 172.16.1.0/24
+     40 거부 172.16.0.0/16
+
+
+
+Standard ACL 생성 명령어 (전역 설정)
+  Router(config)# access-list <acl-number> {permit|deny} <src_ip_address> <wildcardmask>
+
+  wildcardmask : ACL에서 wildcardmask의 비트는 다음의 의미를 가지며, 비트의 조합은 불연속적으로 배치할 수 있다.
+                 0 bit : 검사 비트, 1 bit : 비검사 비트
+
+  예)
+    access-list 10 permit 192.168.1.0 0.0.0.12 를 사용했을 때 식별되는 트래픽의 출발지 주소는 무엇인가?
+    192.168.  1.00000000 -> 192.168.1.0
+    192.168.  1.00000100 -> 192.168.1.4
+    192.168.  1.00001000 -> 192.168.1.8
+    192.168.  1.00001100 -> 192.168.1.12
+      0.  0.  0.00001100
+
+    access-list 10 permit 192.168.1.17 0.0.0.12 를 사용했을 때 식별되는 트래픽의 출발지 주소는 무엇인가?
+    192.168.  1.00010001 -> 192.168.1.17
+    192.168.  1.00010101 -> 192.168.1.21
+    192.168.  1.00011001 -> 192.168.1.25
+    192.168.  1.00011101 -> 192.168.1.29
+      0.  0.  0.00001100
+
+
+Standard ACL 적용 명령어 (전역 설정)
+  Router(config)# interface <interface-type> <slot>/<port>
+  Router(config-if)# ip access-group <acl-number> {in|out}
+
+Standard ACL 확인 명령어 (관리자 모드)
+  Router# show ip access-list
+  
+
+
+192.168.10.0 255.255.255.0
+
+
+255.255.255.0    ->  00000000
+255.255.255.128  ->  10000000
+255.255.255.192  ->  11000000
+255.255.255.224  ->  11100000
+255.255.255.240  ->  11110000
+255.255.255.248  ->  11111000
+255.255.255.252  ->  11111100
+255.255.255.254  ->  11111110
+255.255.255.255  ->  11111111
+
+
+
+
+
+
+Extended ACL 생성 (전역 설정)
+  Router(config)# access-list <acl-number> {permit|deny} <protocol-type> <src-ip-address> <src-wildcard>
+                  <dst-ip-address> <dst-wildcard>
+
+  Router(config)# access-list <acl-number> {permit|deny} {tcp|udp} <src-ip-address> <src-wildcard>
+                  [operator src-port] <dst-ip-address> <dst-wildcard> [operator dst-port]
+
+  - operator : 연산코드로 eq, neq, lt, gt 코드를 사용한다.
+               eq(같다), neq(같지 않다), lt(작다), gt(크다)
+
+  예)
+    Router(config)# access-list 100 deny tcp 192.168.0.0 0.0.255.255 0.0.0.0 255.255.255.255 eq 80
+    내부 192.168.0.0/16 범위의 주소를 사용하는 사용자들은 웹 서비스를 이용하지 못하게 차단.
+
+
+Extended ACL 적용 (전역 설정)
+  Router(config)# interface <interface-type> <slot>/<port>
+  Router(config-if)# ip access-group <acl-number> {in/out}
+
+
+Extended ACL 확인 (관리자 모드)
+  Router# show ip access-list
+
+
+* deny http
+deny 조건으로는 Layer3, 4의 프로토콜들만 가능하다. (모르겠으면 물음표를 통해 확인)
+따라서 http는 tcp를 deny하며, eq 조건으로 http service port number인 80을 입력해준다.
+			  혹은 서비스명 www 입력
+
+* keyword
+
+wildcard-mask가 0.0.0.0 => host
+0.0.0.0 255.255.255.255 -> 모든 ip => any
+
+* Web Server의 접근을 막는다는 것은 브라우저를 통한 접속 뿐만 아니라 핑 테스트 등의 모든 접근을 허용하지 않는 것
+-> deny할시에 tcp가 아닌 ip를 deny하여 모든 internet protocol 접근 차단
+
+
+- ACL 수정하기
+
+Router(config)# ip access-list extended <acl-number>
+Router(config-ext-nacl)# no <acl-sequence-number> 	-> 삭제
+Router(config-ext-nacl)# <acl-sequnce-number> {permit | deny} <<protocol-type> <src-ip-address> <src-wildcard> <dst-ip-address> <dst-wildcard>
+			-> 원하는 검사 순서에 따라서 sequence number 및 조건 입력
+
+
+- 아래와 같은 방식으로도 ACL 입력 가능
+Router(config)# ip access-list {extended | standard} {acl-number | acl-name}
+Router(config-ext-nacl)# 조건1	(조건에 sequence number를 따로 입력하지 않으면 기본값 10으로 증가)
+Router(config-ext-nacl)# 조건2
+
+
+
+
+
+
+
+
+

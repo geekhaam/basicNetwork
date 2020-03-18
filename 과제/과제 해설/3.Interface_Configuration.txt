@@ -1,0 +1,129 @@
+!-R11
+enable
+configure terminal
+
+hostname R11
+enable secret cisco
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 200.10.10.1 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 200.10.20.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.1.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.2.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  no shutdown
+  exit
+
+
+
+
+
+
+
+
+!-R12
+enable
+configure terminal
+
+hostname R12
+enable secret cisco
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 200.10.30.1 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 200.10.40.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.1.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.3.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+
+
+
+
+
+
+
+!-R13
+enable
+configure terminal
+
+hostname R13
+enable secret cisco
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+
+interface fastethernet 0/0
+  ip address 200.10.50.1 255.255.255.0
+  no shutdown
+  exit
+interface fastethernet 0/1
+  ip address 200.10.60.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.2.3 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.3.3 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  no shutdown
+  exit
+
+
+
+
+
+

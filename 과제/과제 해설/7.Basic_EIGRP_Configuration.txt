@@ -1,0 +1,76 @@
+!-R1
+configure terminal
+
+interface fastethernet 0/0
+  ip address 172.16.1.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 172.16.3.1 255.255.255.252
+  encapsulation hdlc
+  bandwidth 64
+  clock rate 64000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.10.5 255.255.255.252
+  encapsulation hdlc
+  bandwidth 2048
+  clock rate 2000000
+  no shutdown
+  exit
+
+
+
+
+
+!-R2
+configure terminal
+
+interface fastethernet 0/0
+  ip address 172.16.2.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 172.16.3.2 255.255.255.252
+  encapsulation hdlc
+  bandwidth 64
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.10.9 255.255.255.252
+  encapsulation hdlc
+  bandwidth 512
+  clock rate 500000
+  no shutdown
+  exit
+interface serial 0/2
+  ip address 10.10.10.1 255.255.255.252
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+
+
+
+
+!-R3
+configure terminal
+
+interface fastethernet 0/0
+  ip address 192.168.1.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.10.6 255.255.255.252
+  encapsulation hdlc
+  bandwidth 2048
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.10.10 255.255.255.252
+  encapsulation hdlc
+  bandwidth 512
+  no shutdown
+  exit

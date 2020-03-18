@@ -1,0 +1,109 @@
+!-R11
+enable
+configure terminal
+
+hostname R11
+enable secret cisco
+no ip domain-lookup
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+interface fastethernet 0/0
+  ip address 172.16.3.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 172.16.2.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  no shutdown
+  exit
+
+
+
+
+
+
+
+
+
+
+!-R12
+enable
+configure terminal
+
+hostname R12
+enable secret cisco
+no ip domain-lookup
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+interface fastethernet 0/0
+  ip address 172.16.1.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 172.16.2.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.1.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+
+
+
+
+
+
+
+
+
+
+!-R13
+enable
+configure terminal
+
+hostname R13
+enable secret cisco
+no ip domain-lookup
+line console 0
+  exec-timeout 0 0
+  logging synchronous
+  exit
+line vty 0 4
+  no password
+  no login
+  exit
+interface fastethernet 0/0
+  ip address 192.168.2.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.1.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  no shutdown
+  exit
+
+
+
+
+
+! Static 정보는 직접 넣어보기.

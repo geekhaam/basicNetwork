@@ -1,0 +1,58 @@
+!-R1
+configure terminal
+
+interface fastethernet 0/0
+  ip address 192.168.1.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.2.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+
+
+
+
+!-R2
+configure terminal
+
+interface fastethernet 0/0
+  ip address 192.168.3.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/0
+  ip address 192.168.2.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.4.2 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit
+
+
+
+
+
+!-R3
+configure terminal
+
+interface fastethernet 0/0
+  ip address 192.168.5.1 255.255.255.0
+  no shutdown
+  exit
+interface serial 0/1
+  ip address 192.168.4.1 255.255.255.0
+  encapsulation hdlc
+  bandwidth 1024
+  clock rate 1000000
+  no shutdown
+  exit

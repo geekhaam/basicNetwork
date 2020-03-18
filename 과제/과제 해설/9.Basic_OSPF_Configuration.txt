@@ -1,0 +1,126 @@
+!--R1
+enable
+configure terminal
+
+hostname R1
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ logging synch
+ exec-timeout 0 0
+ exit
+
+line vty 0 4
+ no password
+ no login
+
+interface fastethernet 0/0
+ ip add 172.16.1.17 255.255.255.240
+ no shutdown
+ exit
+
+interface serial 0/0
+ ip add 192.168.10.1 255.255.255.252
+ band 64
+ no shutdown
+ exit
+
+interface serial 0/1
+ ip add 192.168.10.5 255.255.255.252
+ band 256
+ no shutdown
+ exit
+
+router ospf 1
+ network 172.16.1.17 0.0.0.0 area 0
+ network 192.168.10.1 0.0.0.0 area 0
+ network 192.168.10.5 0.0.0.0 area 0
+
+
+!--R2
+enable
+configure terminal
+
+hostname R2
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ logging synch
+ exec-timeout 0 0
+ exit
+
+line vty 0 4
+ no password
+ no login
+
+interface fastethernet 0/0
+ ip add 10.10.10.1 255.255.255.0
+ no shutdown
+ exit
+
+interface serial 0/0
+ ip add 192.168.10.2 255.255.255.252
+ band 64
+ clock rate 64000
+ no shutdown
+ exit
+
+interface serial 0/1
+ ip add 192.168.10.9 255.255.255.252
+ band 128
+ clock rate 128000
+ no shutdown
+ exit
+
+router ospf 1
+ network 10.10.10.1 0.0.0.0 area 0
+ network 192.168.10.2 0.0.0.0 area 0
+ network 192.168.10.9 0.0.0.0 area 0
+
+!--R3
+enable
+configure terminal
+
+hostname R3
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ logging synch
+ exec-timeout 0 0
+ exit
+
+line vty 0 4
+ no password
+ no login
+
+interface fastethernet 0/0
+ ip add 172.16.1.33 255.255.255.248
+ no shutdown
+ exit
+
+interface serial 0/0
+ ip add 192.168.10.6 255.255.255.252
+ band 256
+ clock rate 250000
+ no shutdown
+ exit
+
+interface serial 0/1
+ ip add 192.168.10.10 255.255.255.252
+ band 128
+ no shutdown
+ exit
+
+router ospf 1
+ network 172.16.1.33 0.0.0.0 area 0
+ network 192.168.10.6 0.0.0.0 area 0
+ network 192.168.10.10 0.0.0.0 area 0
+
+
+
+
+
+
