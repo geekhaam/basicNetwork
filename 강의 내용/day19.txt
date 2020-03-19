@@ -1,0 +1,57 @@
+※ NAT
+  - Network Address Translation(네트워크 주소 변환)
+  - 사설 주소를 사용하는 네트워크에서 외부 인터넷 서비스를 이용할 수 있도록 공인 주소로 변환하는 곳에 사용
+    → 내부 네트워크에서는 사설 IP를 사용하고, 외부 네트워크(Internet)로 나가는 경우 공인 IP 주소로 변환돼서
+      나가는 기술
+  - 공인 IP 주소의 부족으로 많이 사용(PAT : Port Address Translation)
+  - 보안과 경제상의 이유로 NAT를 이용해서 사설 IP를 사용하기도 한다.
+    공인 IP : 유료, 외부와 통신 가능(Internet 사용 가능)
+    사설 IP : 무료, 외부와 통신 불가능(Internet 사용 불가)
+  - NAT는 실제 출발지 주소가 아닌 다른 주소로 변환되어 외부 네트워크로 나가기 때문에 내부 네트워크 정보를
+    공개하지 않는다.
+
+  * Static NAT : 일대일로 공인 IP와 사설 IP를 연결하여 외부에서 사설망으로 들어올 때에도 사설 IP로 변환 가능
+
+  - 사설 IP address
+      Class A : 10.0.0.0 ~ 10.255.255.255(10.0.0.0 /8)
+      Class B : 172.16.0.0 ~ 172.31.255.255(172.16.0.0 /12)
+      Class C : 192.168.0.0 ~ 192.168.255.255(192.168.0.0 /16)
+  - 예약된 IP 주소
+      0.0.0.0 ~ 0.255.255.255 : 컴퓨터 자신을 나타내거나 동일 네트워크의 특정 호스트를 식별하기 위한 용도
+      127.0.0.0 ~ 127.255.255.255 : Localhost 주소, Local 장치의 네트워크 연결 테스트
+      169.254.0.0 ~ 169.254.255.255 : DHCP에서 IP 주소를 받아오지 못한 경우 사용
+  → 위의 주소를 제외한 모든 IP 주소는 공인 IP 주소
+
+  - 변환을 요청한 주소, 변환된 주소들은 NAT Table에 기록되어 저장된다.
+
+  - 출발지 주소를 변경 : SNAT(Source NAT)	   내부 → 외부
+  - 목적지 주소를 변경 : DNAT(Destination NAT) 외부 → 내부 (Static NAT)
+
+  - NAT에는 Static NAT, Dynamic NAT, PAT(Port-forward라고도 함)가 있다.
+    1) Static NAT
+	- Inside Local IP 주소와 Inside Global IP 주소간에 일대일 Mapping하도록 설정
+	- DNS 서버나 이메일 서버 같이 외부 인터넷에서 접속해야 하는 내부 IP 호스트에 유용하다.
+	- 호스트가 꼭 변하지 않는 global 주소를 가져야 할 경우 Static NAT 사용
+	- 외부에서 내부 사설망에 접속하고자 할 때 사용
+    2) Dynamic NAT
+	- Inside Global IP 주소 그룹(pool)에서 하나의 Inside Local IP 주소들과 동적으로
+	  Mapping 되도록 설정 (즉, 공인 IP 그룹과 사설 IP 그룹을 그룹 대 그룹으로 Mapping)
+    3) PAT
+	- 하나의 Inside Global IP 주소 하나와 Inside Local IP 주소들과 Mapping 될 수 있도록 설정
+        - 주소만을 Mapping 하는 것이 아닌 Port Number까지 Mapping 정보를 더 사용하여 다수의 호스트들이 공인 IP 주소를
+	  사용할 수 있게 한다.
+	- 주로 내부 서비스에 공인 IP 주소로 접근할 수 있게 하기 위해 사용
+	  (일반적으로 서버당 1개의 IP 주소가 필요하지만 PAT를 사용함으로 1개의 공인 IP 주소로 여러 서버에 연결할 수 있다.)
+
+   - inside local, inside global	내부 사설 주소, 내부 공인 주소
+     outside local, outside global	외부 사설 주소, 외부 공인 주소
+
+   - NAT 설정시 각 인터페이스에 inside, outside가 모두 존재해야 변환이 가능하다.
+
+   - Static NAT PAT
+       Router(config)# ip nat inside source static {tcp | udp}
+		       <local-ip> <local-port> <global-ip> <global-port>
+
+       Router(config)# ip nat inside source static tcp 192.168.10.250 80 121.10.12.5 80 HTTP
+       Router(config)# ip nat inside source static tcp 192.168.10.251 23 121.10.12.5 23 SSH
+       Router(config)# ip nat inside source static tcp 192.168.10.252 25 121.10.12.5 25 SMTP
