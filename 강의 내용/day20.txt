@@ -1,0 +1,64 @@
+※ VLAN : Virtual LANs
+
+- 라우터가 아닌 스위치를 기준으로 네트워크를 가상으로(Virtual), 논리적으로(Logical) 나누는 것
+- 각각의 VLAN 영역에서 발생한 Broadcast, Multicast, Unicast 통신은 각각의 영역에만 국한되며
+  다른 VLAN 영역으로 전달되지 않는다. 이렇게 오직 하나의 VLAN만 통신되는 영역을 Access라고 한다.
+- 각각의 Logical VLAN은 별도의 Physical Bridge와 동일하다.
+- VLAN을 여러대의 Switch로 확장할 수 있다.
+- Trunk Link는 Traffic을 여러 VLAN으로 전달한다.
+  → Trunk를 통해 다른 Switch의 같은 ID 값을 가진 VLAN 영역끼리 Traffic을 전달할 수 있다.(통신할 수 있다.)
+- 쉽게 End Device와 연결되는 Switch는 Access로 구성하고, 다른 Switch와 연결되는 Switch는 Trunk로 구성한다.
+- Static VLAN / Dynamic VLAN
+
+
+· 802.1Q(Dot1Q) Trunking
+  - 표준 Trunking Protocol
+  - 여러 스위치, 라우터 서버 사이의 VLAN을 서로 연결한다.
+  - Cisco에서는 Fastethernet과 GigabitEthernet Interface에 대해 IEEE 802.1Q를 지원
+
+
+· Native VLAN
+  - 각 Trunk를 지나다니는 VLAN을 구분하기 위해서 기존 Frame에 Tag 정보가 추가된다.
+    → 길이가 길어졌기 때문에 실시간 통신에서 지연이 발생할 수 있다.
+  - Native VLAN은 Tag되지 않은 Frame을 전다하는 VLAN을 정의한다. → 지연을 완화하기 위해서
+  - 802.1Q도 Natvive VLAN으로 정의하기도 한다.
+
+  * Frame 구성 : dst_addr | src_addr | type | data (tag 정보는 src_addr과 type 사이에 추가된다.)
+    Tag 정보는 EtherType | PRI | Token Ring Encapsulation Flag | VLAN ID 로 구성
+    VLAN ID는 2^12 = 4096 (0 ~ 4095)개의 ID를 사용할 수 있다.
+
+
+* ISL Protocol은 이제 사용하지 않는다.
+* 설정은 교재 참고
+
+* Verifying VLANs 추가 명령어
+  - show interface trunk : 트렁크로 구성된 인터페이스 정보를 볼 수 있다.
+
+
+※ Switches and Bridges
+
+· Function
+  - Address learning
+  - Forward/filter decision (한 번 Outbound된 트래픽은 다시 Inbound 되지 않는다.)
+  - Loop avoidance (STP)
+
+· Transmitting Frames
+  - Cut-Through : Switch가 목적지 주소를 확인 후 즉시 전달하는 방법
+  - Store and Forward : 프레임을 모두 전송 받아 검사 후 전달한다. (Footer를 통해 에러를 검사 후 전달 → 느림)
+  - Fragment-Free : Switch가 프레임에 64Byte까지 검사한 후 즉시 전달을 시작한다.
+
+· STP(Spanning-Tree Protocol)
+  - Switch가 Topology내의 루프를 인식하고 하나의 Link를 차단하고 있는 상태에서 Loop를 제거한다.
+  - 포트를 계속 모니터링 하다가 다른 포트에 장애나 토폴로지 변경이 발생하는 경우 포트를 재설정하여 연결의
+    완전 손실이나 새로운 루프를 막는다.
+    → 이렇게 Link를 차단하게 되면 대략 30초 가량 통신이 불가한 상태가 된다.
+  - BPDU(802.1d) 어떠한 Link를 차단할지 매개변수를 통해 확인하는 기능
+     Root Priority/ID, Cost Of Path To Root, Bridge Priority/ID, port Priority/ID
+     네 개만 확인하면 된다.
+  - Operation은 교재 참고
+
+* Cost Of Path To Root
+    100Mbps -  19 Cost
+    10Mbps  - 100 Cost
+    1Gbps   -   4 Cost
+
